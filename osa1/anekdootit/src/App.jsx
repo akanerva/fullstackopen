@@ -5,6 +5,11 @@ function randomIndex(max) {
 }
 
 const App = () => {
+  const handleVote = () => {
+    const copy = [...points];
+    copy[selected] += 1;
+    setPoints(copy);
+  };
   const anecdotes = [
     "If it hurts, do it more often.",
     "Adding manpower to a late software project makes it later!",
@@ -17,10 +22,13 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(randomIndex(anecdotes.length));
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
   return (
     <div>
       <div>{anecdotes[selected]}</div>
+      <div>has {points[selected]} votes</div>
+      <button onClick={handleVote}>vote</button>
       <button onClick={() => setSelected(randomIndex(anecdotes.length))}>
         next anecdote
       </button>
