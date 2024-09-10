@@ -9,6 +9,17 @@ const App = () => {
     const copy = [...points];
     copy[selected] += 1;
     setPoints(copy);
+
+    // hae indeksi jonka takana suurin luku
+    let index = 0;
+    for (let i = 1; i < copy.length; i++) {
+      if (copy[i] > copy[i - 1]) {
+        index = i;
+      }
+    }
+    // console.log("index: ", index);
+    // console.log("points: ", copy);
+    setWinner(index);
   };
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -23,15 +34,19 @@ const App = () => {
 
   const [selected, setSelected] = useState(randomIndex(anecdotes.length));
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
+  const [winner, setWinner] = useState(null);
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {points[selected]} votes</div>
       <button onClick={handleVote}>vote</button>
       <button onClick={() => setSelected(randomIndex(anecdotes.length))}>
         next anecdote
       </button>
+      <h1>Anecdote with most votes</h1>
+      <div>{anecdotes[winner]}</div>
     </div>
   );
 };
