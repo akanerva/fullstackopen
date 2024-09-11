@@ -5,7 +5,7 @@ const Course = ({ course }) => (
   </div>
 );
 
-const Header = ({ name }) => <h1>{name}</h1>;
+const Header = ({ name }) => <h2>{name}</h2>;
 
 const Content = ({ parts }) => {
   const list = parts.map((part) => (
@@ -83,7 +83,14 @@ const App = () => {
     <Course key={i} course={course} />
   ));
 
-  return <div>{courseList}</div>;
+  return (
+    <div>
+      <div>
+        <h1>Web development curriculum</h1>
+      </div>
+      <div>{courseList}</div>
+    </div>
+  );
 };
 
 export default App;
