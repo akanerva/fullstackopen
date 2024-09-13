@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import personService from "./services/persons";
 
 const Filter = ({ filter, handler }) => (
   <div>
@@ -44,7 +45,7 @@ const App = () => {
   const [filteredList, setFilteredList] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((res) => {
+    personService.getAll().then((res) => {
       // console.log(res);
       setPersons(res.data);
       setFilteredList(res.data);
@@ -58,6 +59,7 @@ const App = () => {
       return;
     }
     const copy = [{ name: newName, number: newNumber }, ...persons];
+    personService.create({ name: newName, number: newNumber });
     setPersons(copy);
     setNewName("");
     setNewNumber("");
