@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import personService from "./services/persons";
 
 const Filter = ({ filter, handler }) => (
@@ -23,19 +22,29 @@ const PersonForm = ({ name, number, submit, nameHandler, numberHandler }) => (
   </form>
 );
 
-const PersonList = ({ persons }) => (
-  <div>
-    {persons.map((person) => (
-      <Person key={person.name} name={person.name} number={person.number} />
-    ))}
-  </div>
-);
+const PersonList = ({ persons, handleDelete }) => {
+  return (
+    <div>
+      {persons.map((person) => (
+        <Person
+          key={person.name}
+          name={person.name}
+          number={person.number}
+          id={person.id}
+          handleDelete={handleDelete}
+        />
+      ))}
+    </div>
+  );
+};
 
-const Person = ({ name, number }) => (
-  <div>
-    {name} {number}
-  </div>
-);
+const Person = ({ name, number, id, handleDelete }) => {
+  return (
+    <li>
+      {name} {number} <button onClick={() => handleDelete(id)}>delete</button>
+    </li>
+  );
+};
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -46,29 +55,47 @@ const App = () => {
 
   useEffect(() => {
     personService.getAll().then((res) => {
-      // console.log(res);
-      setPersons(res.data);
-      setFilteredList(res.data);
+      console.log("getAll response: ", res);
+      setPersons(res);
+      setFilteredList(res);
     });
   }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+      alert(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
       return;
     }
-    const copy = [{ name: newName, number: newNumber }, ...persons];
-    personService.create({ name: newName, number: newNumber });
-    setPersons(copy);
-    setNewName("");
-    setNewNumber("");
-    // console.log(copy);
-    setFilteredList(
-      copy.filter((person) =>
-        person.name.toLowerCase().includes(nameFilter.toLowerCase())
-      )
-    );
+    personService.create({ name: newName, number: newNumber }).then((res) => {
+      console.log("personService.create res", res);
+      const copy = [res, ...persons];
+      setPersons(copy);
+      setNewName("");
+      setNewNumber("");
+      setFilteredList(
+        copy.filter((person) =>
+          person.name.toLowerCase().includes(nameFilter.toLowerCase())
+        )
+      );
+    });
+  };
+
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.deleteById(id).then(() => {
+        const newPersons = persons.filter((person) => person.id !== id);
+        setPersons(newPersons);
+        setFilteredList(
+          newPersons.filter((person) =>
+            person.name.toLowerCase().includes(nameFilter)
+          )
+        );
+      });
+    }
   };
 
   const handleFilterChange = (event) => {
@@ -79,7 +106,7 @@ const App = () => {
       )
     );
     const copy = filteredList;
-    console.log(copy);
+    console.log("filteredList: ", copy);
   };
 
   const handleNumberChange = (event) => {
@@ -103,7 +130,7 @@ const App = () => {
         numberHandler={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <PersonList persons={filteredList} />
+      <PersonList persons={filteredList} handleDelete={deletePerson} />
     </div>
   );
 };
