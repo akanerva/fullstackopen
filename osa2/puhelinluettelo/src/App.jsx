@@ -64,9 +64,36 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     if (persons.some((person) => person.name === newName)) {
-      alert(
-        `${newName} is already added to phonebook, replace the old number with a new one?`
-      );
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const personToUpdate = persons.find(
+          (person) => person.name === newName
+        );
+        const updatedPerson = {
+          number: newNumber,
+          name: personToUpdate.name,
+          id: personToUpdate.id,
+        };
+        console.log("updatedPerson", updatedPerson);
+        personService.update(personToUpdate.id, updatedPerson).then((res) => {
+          console.log("update res", res);
+          const copy = [
+            res,
+            ...persons.filter((person) => person.id !== personToUpdate.id),
+          ];
+          setPersons(copy);
+          setNewName("");
+          setNewNumber("");
+          setFilteredList(
+            copy.filter((person) =>
+              person.name.toLowerCase().includes(nameFilter.toLowerCase())
+            )
+          );
+        });
+      }
       return;
     }
     personService.create({ name: newName, number: newNumber }).then((res) => {
