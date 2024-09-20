@@ -47,9 +47,20 @@ const Person = ({ name, number, id, handleDelete }) => {
 };
 
 const Notification = ({ message }) => {
+  if (message == null) {
+    return <></>;
+  }
+  console.log("message.error: ", message.error);
   const messageStyle =
-    message == null
-      ? {}
+    message.error === true
+      ? {
+          backgroundColor: "LightGrey",
+          color: "red",
+          borderStyle: "solid",
+          borderRadius: "4px",
+          padding: "10px",
+          marginBottom: "10px",
+        }
       : {
           backgroundColor: "LightGrey",
           color: "ForestGreen",
@@ -58,7 +69,7 @@ const Notification = ({ message }) => {
           padding: "10px",
           marginBottom: "10px",
         };
-  return <div style={messageStyle}>{message}</div>;
+  return <div style={messageStyle}>{message.text}</div>;
 };
 
 const App = () => {
@@ -67,7 +78,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [nameFilter, setNameFilter] = useState("");
   const [filteredList, setFilteredList] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((res) => {
@@ -108,7 +119,7 @@ const App = () => {
               person.name.toLowerCase().includes(nameFilter.toLowerCase())
             )
           );
-          setMessage(`Modified ${newName}`);
+          setMessage({ text: `Modified ${newName}`, error: false });
           setTimeout(() => {
             setMessage(null);
           }, 5000);
@@ -127,7 +138,7 @@ const App = () => {
           person.name.toLowerCase().includes(nameFilter.toLowerCase())
         )
       );
-      setMessage(`Added ${newName}`);
+      setMessage({ text: `Added ${newName}`, error: false });
       setTimeout(() => {
         setMessage(null);
       }, 5000);
@@ -137,19 +148,30 @@ const App = () => {
   const deletePerson = (id) => {
     const person = persons.find((person) => person.id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService.deleteById(id).then(() => {
-        const newPersons = persons.filter((person) => person.id !== id);
-        setPersons(newPersons);
-        setFilteredList(
-          newPersons.filter((person) =>
-            person.name.toLowerCase().includes(nameFilter)
-          )
-        );
-        setMessage(`Removed ${person.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 5000);
-      });
+      personService
+        .deleteById(id)
+        .then(() => {
+          const newPersons = persons.filter((person) => person.id !== id);
+          setPersons(newPersons);
+          setFilteredList(
+            newPersons.filter((person) =>
+              person.name.toLowerCase().includes(nameFilter)
+            )
+          );
+          setMessage({ text: `Removed ${person.name}`, error: false });
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setMessage({
+            text: `Person ${person.name} was already removed from server`,
+            error: true,
+          });
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        });
     }
   };
 
