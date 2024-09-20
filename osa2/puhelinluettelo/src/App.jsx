@@ -46,12 +46,28 @@ const Person = ({ name, number, id, handleDelete }) => {
   );
 };
 
+const Notification = ({ message }) => {
+  const messageStyle =
+    message == null
+      ? {}
+      : {
+          backgroundColor: "LightGrey",
+          color: "ForestGreen",
+          borderStyle: "solid",
+          borderRadius: "4px",
+          padding: "10px",
+          marginBottom: "10px",
+        };
+  return <div style={messageStyle}>{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [nameFilter, setNameFilter] = useState("");
   const [filteredList, setFilteredList] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     personService.getAll().then((res) => {
@@ -92,6 +108,10 @@ const App = () => {
               person.name.toLowerCase().includes(nameFilter.toLowerCase())
             )
           );
+          setMessage(`Modified ${newName}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
         });
       }
       return;
@@ -107,6 +127,10 @@ const App = () => {
           person.name.toLowerCase().includes(nameFilter.toLowerCase())
         )
       );
+      setMessage(`Added ${newName}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     });
   };
 
@@ -121,6 +145,10 @@ const App = () => {
             person.name.toLowerCase().includes(nameFilter)
           )
         );
+        setMessage(`Removed ${person.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       });
     }
   };
@@ -148,6 +176,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={nameFilter} handler={handleFilterChange} />
       <PersonForm
         name={newName}
