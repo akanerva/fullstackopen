@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import countryService from "./services/countries";
 
-const Content = ({ filterText, countries }) => {
+const Content = ({ filterText, countries, country, handleShow }) => {
+  if (country) {
+    return <Country country={country} />;
+  }
+
   if (!countries) {
     console.log("countries is null");
     return <></>;
@@ -19,8 +23,12 @@ const Content = ({ filterText, countries }) => {
   }
 
   const countryNames = filteredCountries.map((country) => (
-    <li key={country.name.common}>{country.name.common}</li>
+    <li key={country.name.common}>
+      {country.name.common}{" "}
+      <button onClick={() => handleShow(country)}>show</button>
+    </li>
   ));
+
   return <div>{countryNames}</div>;
 };
 
@@ -50,6 +58,7 @@ const Country = ({ country }) => {
 function App() {
   const [filterText, setFilterText] = useState("");
   const [countries, setCountries] = useState(null);
+  const [country, setCountry] = useState(null);
 
   useEffect(() => {
     countryService.getAll().then((countries) => {
@@ -61,6 +70,7 @@ function App() {
 
   const handleFilterChange = (event) => {
     setFilterText(event.target.value);
+    setCountry(null);
   };
 
   return (
@@ -69,7 +79,12 @@ function App() {
         find countries{" "}
         <input value={filterText} onChange={handleFilterChange}></input>
       </div>
-      <Content filterText={filterText} countries={countries} />
+      <Content
+        filterText={filterText}
+        countries={countries}
+        country={country}
+        handleShow={(country) => setCountry(country)}
+      />
     </>
   );
 }
