@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import countryService from "./services/countries";
+import weatherService from "./services/weather";
 
 const Content = ({ filterText, countries, country, handleShow }) => {
   if (country) {
@@ -34,11 +35,22 @@ const Content = ({ filterText, countries, country, handleShow }) => {
 
 const Country = ({ country }) => {
   console.log("country prop: ", country);
+
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    weatherService
+      .getWeather(country.capitalInfo.latlng[0], country.capitalInfo.latlng[1])
+      .then((res) => setWeather(res));
+  }, [country]);
+
   let languages = [];
   // eslint-disable-next-line no-unused-vars
   Object.entries(country.languages).forEach(([key, value]) => {
     languages.push(<li key={value}>{value}</li>);
   });
+
+  console.log("weather: ", weather);
 
   return (
     <>
@@ -51,7 +63,27 @@ const Country = ({ country }) => {
       <h3>languages:</h3>
       <ul>{languages}</ul>
       <img src={country.flags.png}></img>
+      <Weather weather={weather} capital={country.capital[0]} />
     </>
+  );
+};
+
+const Weather = ({ weather, capital }) => {
+  if (!weather) {
+    return <div></div>;
+  }
+  console.log("weather prop", weather);
+  console.log(weather.weather[0].icon);
+  const weatherIcon = weather.weather[0].icon;
+  const temperature = weather.main.temp - 273.15;
+  const wind = weather.wind.speed;
+  return (
+    <div>
+      <h2>Weather in {capital}</h2>
+      <p>temperature {temperature} Celsius</p>
+      <img src={weatherService.getIcon(weatherIcon)}></img>
+      <p>wind {wind} m/s</p>
+    </div>
   );
 };
 

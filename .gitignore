@@ -1,3 +1,4 @@
 esimerkit/
 node_modules/
 **/db.json
+.env
