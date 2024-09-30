@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 let persons = [
   {
@@ -51,6 +52,21 @@ app.delete("/api/persons/:id", (req, res) => {
   console.log("deleted person: ", personToRemove);
   persons = filteredArray;
   res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  console.log("body received: ", req.body);
+  const name = req.body.name;
+  const number = req.body.number;
+  let id = "1";
+  while (persons.find((person) => person.id === id)) {
+    console.log(`id ${id} already exists. generating new one`);
+    id = Math.floor(Math.random() * 10000);
+  }
+  const personToAdd = { id: id, name: name, number: number };
+  persons.concat({ id: id, name: name, number: number });
+  res.status(201);
+  res.json(personToAdd);
 });
 
 const PORT = 3001;
