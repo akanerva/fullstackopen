@@ -28,10 +28,29 @@ app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = persons.find((person) => person.id === id);
+  if (person) {
+    res.json(person);
+  } else {
+    res.status(404).end();
+  }
+});
+
 app.get("/info", (req, res) => {
   const date = new Date();
   console.log(date);
   res.send(`<p>Phonebook has info for ${persons.length} people</p>${date}<p>`);
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const personToRemove = persons.find((person) => person.id === id);
+  const filteredArray = persons.filter((person) => person.id !== id);
+  console.log("deleted person: ", personToRemove);
+  persons = filteredArray;
+  res.status(204).end();
 });
 
 const PORT = 3001;
