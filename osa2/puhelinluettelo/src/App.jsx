@@ -148,7 +148,7 @@ const App = () => {
       .catch((error) => {
         console.log(error);
         setMessage({
-          text: error.message,
+          text: error.response.data.error,
           error: true,
         });
         setTimeout(() => {
