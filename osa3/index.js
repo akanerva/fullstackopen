@@ -90,6 +90,15 @@ app.post("/api/persons", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  console.log("body received: ", req.body);
+  const { name, number } = req.body;
+
+  Person.findByIdAndUpdate(req.params.id, { name, number }, { new: true })
+    .then((personAfterUpdate) => res.json(personAfterUpdate))
+    .catch((error) => next(error));
+});
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };

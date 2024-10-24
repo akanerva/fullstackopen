@@ -1,3 +1,3 @@
-GET http://localhost:3001/api/persons/1
+GET http://localhost:3001/api/persons/6718c13bb4ed8cecb0c746ed
 
 GET https://osa3-sparkling-frost-6436.fly.dev/api/persons/1

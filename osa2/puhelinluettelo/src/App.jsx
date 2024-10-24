@@ -27,7 +27,7 @@ const PersonList = ({ persons, handleDelete }) => {
     <div>
       {persons.map((person) => (
         <Person
-          key={person.id}
+          key={person.name}
           name={person.name}
           number={person.number}
           id={person.id}
