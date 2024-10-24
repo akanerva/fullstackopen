@@ -127,22 +127,34 @@ const App = () => {
       }
       return;
     }
-    personService.create({ name: newName, number: newNumber }).then((res) => {
-      console.log("personService.create res", res);
-      const copy = [res, ...persons];
-      setPersons(copy);
-      setNewName("");
-      setNewNumber("");
-      setFilteredList(
-        copy.filter((person) =>
-          person.name.toLowerCase().includes(nameFilter.toLowerCase())
-        )
-      );
-      setMessage({ text: `Added ${newName}`, error: false });
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
-    });
+    personService
+      .create({ name: newName, number: newNumber })
+      .then((res) => {
+        console.log("personService.create res", res);
+        const copy = [res, ...persons];
+        setPersons(copy);
+        setNewName("");
+        setNewNumber("");
+        setFilteredList(
+          copy.filter((person) =>
+            person.name.toLowerCase().includes(nameFilter.toLowerCase())
+          )
+        );
+        setMessage({ text: `Added ${newName}`, error: false });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        console.log(error);
+        setMessage({
+          text: error.message,
+          error: true,
+        });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      });
   };
 
   const deletePerson = (id) => {
