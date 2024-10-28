@@ -6,3 +6,12 @@ Content-Type: application/json
     "url": "idk",
     "likes": "2"
 }
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+{
+    "title": "heippis!",
+    "author": "Taikuri Luttinen",
+    "url": "emt",
+    "likes": 1
+}
