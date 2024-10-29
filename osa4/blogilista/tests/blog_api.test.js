@@ -29,6 +29,12 @@ describe("GET /api/blogs", () => {
     result = await api.get("/api/blogs");
     assert.strictEqual(result.body.length, 6);
   });
+
+  test("blog object includes attribute id instead of _id", async () => {
+    result = await api.get("/api/blogs");
+    assert.strictEqual(result.body[1].hasOwnProperty("id"), true);
+    assert.notStrictEqual(result.body[1].hasOwnProperty("_id"), true);
+  });
 });
 
 after(async () => {
