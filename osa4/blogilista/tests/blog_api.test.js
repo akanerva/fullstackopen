@@ -26,14 +26,24 @@ test("blogs are returned as json", async () => {
 
 describe("GET /api/blogs", () => {
   test("returns correct amount of JSON objects", async () => {
-    result = await api.get("/api/blogs");
+    const result = await api.get("/api/blogs");
     assert.strictEqual(result.body.length, 6);
   });
 
   test("blog object includes attribute id instead of _id", async () => {
-    result = await api.get("/api/blogs");
+    const result = await api.get("/api/blogs");
     assert.strictEqual(result.body[1].hasOwnProperty("id"), true);
     assert.notStrictEqual(result.body[1].hasOwnProperty("_id"), true);
+  });
+});
+
+describe("POST /api/blogs", () => {
+  test("actually adds blog to database", async () => {
+    const result = await api.get("/api/blogs");
+    const blogExample = { title: "x", author: "y", url: "z", likes: 1 };
+    await api.post("/api/blogs", {}).send(blogExample);
+    const newResult = await api.get("/api/blogs");
+    assert.strictEqual(result.body.length + 1, newResult.body.length);
   });
 });
 
