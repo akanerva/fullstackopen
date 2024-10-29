@@ -1,6 +1,8 @@
 const { test, describe, after, beforeEach } = require("node:test");
 const assert = require("node:assert");
 
+const lodash = require("lodash");
+
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const helper = require("./test_helper");
@@ -44,6 +46,13 @@ describe("POST /api/blogs", () => {
     await api.post("/api/blogs", {}).send(blogExample);
     const newResult = await api.get("/api/blogs");
     assert.strictEqual(result.body.length + 1, newResult.body.length);
+  });
+
+  test("omitted likes defaults to 0", async () => {
+    const blog = { title: "example", author: "tester", url: "e" };
+    await api.post("/api/blogs").send(blog);
+    const blogs = await api.get("/api/blogs");
+    assert.strictEqual(lodash.find(blogs.body, blog).likes, 0);
   });
 });
 

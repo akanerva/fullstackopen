@@ -1,6 +1,5 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
-const logger = require("../utils/logger");
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({});
@@ -13,7 +12,7 @@ blogsRouter.post("/", async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes ?? 0,
   });
   const result = await blog.save();
   response.status(201).json(result);
