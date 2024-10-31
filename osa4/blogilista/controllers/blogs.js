@@ -6,8 +6,17 @@ blogsRouter.get("/", async (request, response) => {
   response.json(blogs);
 });
 
+blogsRouter.get("/:id", async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+  response.json(blog);
+});
+
 blogsRouter.post("/", async (request, response) => {
   const body = request.body;
+
+  if (!body.title || !body.author) {
+    response.status(400).json();
+  }
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -16,6 +25,11 @@ blogsRouter.post("/", async (request, response) => {
   });
   const result = await blog.save();
   response.status(201).json(result);
+});
+
+blogsRouter.delete("/:id", async (request, response) => {
+  const blogToRemove = await Blog.findByIdAndDelete(request.params.id);
+  response.json(blogToRemove);
 });
 
 module.exports = blogsRouter;
