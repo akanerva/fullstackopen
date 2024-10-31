@@ -73,7 +73,7 @@ describe("POST /api/blogs", () => {
   });
 });
 
-describe("DELETE /api/blogs", () => {
+describe("DELETE /api/blogs/:id", () => {
   test("actually deletes a blog", async () => {
     const result = await api.get("/api/blogs");
     const blogToRemove = result.body[0];
@@ -85,6 +85,26 @@ describe("DELETE /api/blogs", () => {
       lodash.find(newResult.body, blogToRemove),
       blogToRemove
     );
+  });
+});
+
+describe("PUT /api/blogs:id", () => {
+  test("actually udpates a blog", async () => {
+    const blogs = await api.get("/api/blogs");
+    const idToUpdate = blogs.body[0].id;
+    const newBlog = {
+      title: "aybabtu",
+      author: "tiatlg",
+      url: "kek",
+      likes: 5,
+    };
+    await api.put(`/api/blogs/${idToUpdate}`).send(newBlog);
+    const updatedResult = await api.get(`/api/blogs/${idToUpdate}`);
+    const newBlogWithId = {
+      id: idToUpdate,
+      ...newBlog,
+    };
+    assert.deepEqual(updatedResult.body, newBlogWithId);
   });
 });
 
