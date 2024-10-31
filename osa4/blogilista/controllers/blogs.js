@@ -14,8 +14,8 @@ blogsRouter.get("/:id", async (request, response) => {
 blogsRouter.post("/", async (request, response) => {
   const body = request.body;
 
-  if (!body.title || !body.author) {
-    response.status(400).json();
+  if (!body.title || !body.url) {
+    return response.status(400).json();
   }
   const blog = new Blog({
     title: body.title,

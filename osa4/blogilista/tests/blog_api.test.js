@@ -53,6 +53,24 @@ describe("POST /api/blogs", () => {
     const blogs = await api.get("/api/blogs");
     assert.strictEqual(lodash.find(blogs.body, blog).likes, 0);
   });
+
+  test("requires title in body", async () => {
+    const blogsBefore = await api.get("/api/blogs");
+    const blogWithoutTitle = { author: "tester", url: "e" };
+    const postResult = await api.post("/api/blogs").send(blogWithoutTitle);
+    const blogsAfter = await api.get("/api/blogs");
+    assert.strictEqual(postResult.statusCode, 400);
+    assert.strictEqual(blogsBefore.body.length, blogsAfter.body.length);
+  });
+
+  test("requires url in body", async () => {
+    const blogsBefore = await api.get("/api/blogs");
+    const blogWithoutUrl = { title: "example", author: "tester" };
+    const postResult = await api.post("/api/blogs").send(blogWithoutUrl);
+    const blogsAfter = await api.get("/api/blogs");
+    assert.strictEqual(postResult.statusCode, 400);
+    assert.strictEqual(blogsBefore.body.length, blogsAfter.body.length);
+  });
 });
 
 describe("DELETE /api/blogs", () => {
