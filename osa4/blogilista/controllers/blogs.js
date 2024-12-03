@@ -1,16 +1,8 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const logger = require("../utils/logger");
-
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
+const userExtractor = require("../utils/middleware").userExtractor;
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
@@ -38,18 +30,17 @@ blogsRouter.put("/:id", async (request, response) => {
   response.json(result);
 });
 
-blogsRouter.post("/", async (request, response) => {
+blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body;
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
+  if (!request.user) {
     return response.status(401).json({ error: "token invalid" });
   }
   if (!body.title || !body.url) {
     return response.status(400).json();
   }
 
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(request.user);
 
   const blog = new Blog({
     title: body.title,
@@ -65,20 +56,17 @@ blogsRouter.post("/", async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogsRouter.delete("/:id", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
+blogsRouter.delete("/:id", userExtractor, async (request, response) => {
+  if (!request.user) {
     return response.status(401).json({ error: "token invalid" });
   }
   const blogToRemove = await Blog.findById(request.params.id);
-  logger.info(`decodedToken.id: ${decodedToken.id}`);
-  logger.info(`blogToRemove.user.toString(): ${blogToRemove.user.toString()}`);
-  if (decodedToken.id !== blogToRemove.user.toString()) {
+  if (request.user !== blogToRemove.user.toString()) {
     return response
       .status(401)
       .json({ error: "cannot remove someone else's blog" });
   }
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(request.user);
   user.blogs = user.blogs.filter(
     (blog) => blog.id.toString() !== request.params.id
   );
