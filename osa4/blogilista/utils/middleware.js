@@ -26,13 +26,29 @@ const errorHandler = (error, request, response, next) => {
     return response
       .status(400)
       .json({ error: "expected 'username' to be unique" });
+  } else if (
+    error.name === "JsonWebTokenError" &&
+    error.message.includes("jwt must be provided")
+  ) {
+    return response
+      .status(401)
+      .json({ error: "jwt is required for this request" });
   }
 
   next(error);
+};
+
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    request.token = authorization.replace("Bearer ", "");
+  }
+  next();
 };
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
 };

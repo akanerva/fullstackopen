@@ -18,7 +18,7 @@ Content-Type: application/json
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJydWgiLCJpZCI6IjY3NGQ4MDNjMWJhMWRlYjU2ZGJlYzQ2NiIsImlhdCI6MTczMzIzMTYzNH0.3R5gUQqqgHJjWLVBKnMeh7Emm-9OQ14O3T_cSZYpiTQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJydWgiLCJpZCI6IjY3NGQ4MDNjMWJhMWRlYjU2ZGJlYzQ2NiIsImlhdCI6MTczMzIzNTQzMn0.uWTsBvcXYsyq55iM4M_qyMrw455e7TrmLmSuI-fz8fo
 {
     "title": "jauzaa",
     "author": "Luikuri Tattinen",
