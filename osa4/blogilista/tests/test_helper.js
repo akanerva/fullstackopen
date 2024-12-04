@@ -1,4 +1,5 @@
 const Blog = require("../models/blog");
+const bcrypt = require("bcrypt");
 
 const initialBlogs = [
   {
@@ -22,7 +23,7 @@ const initialBlogs = [
     title: "Canonical string reduction",
     author: "Edsger W. Dijkstra",
     url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
+    likes: 9,
     __v: 0,
   },
   {
@@ -30,7 +31,7 @@ const initialBlogs = [
     title: "First class tests",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-    likes: 10,
+    likes: 8,
     __v: 0,
   },
   {
@@ -51,15 +52,18 @@ const initialBlogs = [
   },
 ];
 
-const initialUsers = [
-  {
-    _id: "5a422bc61b54a676234d17fc",
-    username: "root",
-    name: "Richard",
-    passwordHash: "asdf1324",
-    __v: 0,
-  },
-];
+const initialUsers = async () => {
+  const passwordHash = await bcrypt.hash("asdf1234", 10);
+  return [
+    {
+      _id: "5a422bc61b54a676234d17fd",
+      username: "root",
+      name: "Richard",
+      passwordHash: passwordHash,
+      __v: 0,
+    },
+  ];
+};
 
 const nonExistingId = async () => {
   const blog = new Blog({

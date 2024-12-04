@@ -8,14 +8,22 @@ const supertest = require("supertest");
 const helper = require("./test_helper");
 const User = require("../models/user");
 const app = require("../app");
+const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await User.deleteMany({});
-  const userObjects = helper.initialUsers.map((user) => new User(user));
-  const promiseArray = userObjects.map((user) => user.save());
-  await Promise.all(promiseArray);
+
+  const passwordHash = await bcrypt.hash("asdf1234", 10);
+  const user = new User({
+    username: "root",
+    name: "Richard",
+    blogs: [],
+    passwordHash: passwordHash,
+  });
+
+  await user.save();
 });
 
 test("users are returned as json", async () => {
