@@ -39,6 +39,20 @@ const App = () => {
     }
   };
 
+  const handleLogout = async (event) => {
+    try {
+      window.localStorage.removeItem("loggedBloglistUser");
+      setUser(null);
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      setErrorMessage("couldn't logout");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
@@ -68,7 +82,10 @@ const App = () => {
 
   const blogsForm = () => (
     <>
-      <div>{user.name} logged in</div>
+      <div>
+        {user.name} logged in{" "}
+        <button onClick={() => handleLogout()}>logout</button>
+      </div>
       <h2>blogs</h2>
       <div>
         {blogs.map((blog) => (
