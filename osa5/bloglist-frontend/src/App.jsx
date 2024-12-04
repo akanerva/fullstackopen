@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -53,6 +56,29 @@ const App = () => {
     }
   };
 
+  const handleCreateBlog = async (event) => {
+    event.preventDefault();
+
+    try {
+      const newBlog = {
+        username,
+        title,
+        url,
+        author,
+      };
+      const response = await blogService.create(newBlog);
+      setBlogs([...blogs, response]);
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (exception) {
+      setErrorMessage("error creating blog");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
@@ -80,6 +106,44 @@ const App = () => {
     </>
   );
 
+  const createBlogForm = () => (
+    <>
+      <h2>create new</h2>
+      <form onSubmit={handleCreateBlog}>
+        <div>
+          title:
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type="text"
+            value={author}
+            name="Author"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type="text"
+            value={url}
+            name="Url"
+            onChange={({ target }) => setUrl(target.value)}
+          />
+          <div>
+            <button type="submit">create</button>
+          </div>
+        </div>
+      </form>
+    </>
+  );
+
   const blogsForm = () => (
     <>
       <div>
@@ -98,6 +162,7 @@ const App = () => {
   return (
     <div>
       {!user && loginForm()}
+      {user && createBlogForm()}
       {user && blogsForm()}
     </div>
   );
