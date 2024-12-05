@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
+import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -38,6 +39,8 @@ const App = () => {
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -102,6 +105,7 @@ const App = () => {
       setTimeout(() => {
         setMessage(null);
       }, 5000);
+      blogFormRef.current.toggleVisibility();
     } catch (exception) {
       setMessage({ text: "error creating blog", error: true });
       setTimeout(() => {
@@ -139,7 +143,7 @@ const App = () => {
   );
 
   const createBlogForm = () => (
-    <>
+    <Togglable buttonLabel="create blog" ref={blogFormRef}>
       <h2>create new</h2>
       <form onSubmit={handleCreateBlog}>
         <div>
@@ -173,7 +177,7 @@ const App = () => {
           </div>
         </div>
       </form>
-    </>
+    </Togglable>
   );
 
   const blogsForm = () => {
