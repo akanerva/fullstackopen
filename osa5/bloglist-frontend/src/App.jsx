@@ -3,6 +3,32 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
+const Notification = ({ message }) => {
+  if (message == null) {
+    return <></>;
+  }
+  console.log("message.error: ", message.error);
+  const messageStyle =
+    message.error === true
+      ? {
+          backgroundColor: "LightGrey",
+          color: "red",
+          borderStyle: "solid",
+          borderRadius: "4px",
+          padding: "10px",
+          marginBottom: "10px",
+        }
+      : {
+          backgroundColor: "LightGrey",
+          color: "ForestGreen",
+          borderStyle: "solid",
+          borderRadius: "4px",
+          padding: "10px",
+          marginBottom: "10px",
+        };
+  return <div style={messageStyle}>{message.text}</div>;
+};
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
@@ -11,6 +37,7 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -35,9 +62,9 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("wrong credentials");
+      setMessage({ text: "wrong username or password", error: true });
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage(null);
       }, 5000);
     }
   };
@@ -71,10 +98,14 @@ const App = () => {
       setTitle("");
       setAuthor("");
       setUrl("");
-    } catch (exception) {
-      setErrorMessage("error creating blog");
+      setMessage({ text: `a new blog ${response.title} added`, error: false });
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage(null);
+      }, 5000);
+    } catch (exception) {
+      setMessage({ text: "error creating blog", error: true });
+      setTimeout(() => {
+        setMessage(null);
       }, 5000);
     }
   };
@@ -82,6 +113,7 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
+      <Notification message={message} />
       <form onSubmit={handleLogin}>
         <div>
           username
@@ -144,26 +176,33 @@ const App = () => {
     </>
   );
 
-  const blogsForm = () => (
-    <>
-      <div>
-        {user.name} logged in{" "}
-        <button onClick={() => handleLogout()}>logout</button>
-      </div>
-      <h2>blogs</h2>
-      <div>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-      </div>
-    </>
-  );
+  const blogsForm = () => {
+    const marginTop = {
+      marginTop: "20px",
+    };
+
+    return (
+      <>
+        <h2>blogs</h2>
+        <Notification message={message} />
+        <div>
+          {user.name} logged in{" "}
+          <button onClick={() => handleLogout()}>logout</button>
+        </div>
+        <div style={marginTop}>
+          {blogs.map((blog) => (
+            <Blog key={blog.id} blog={blog} />
+          ))}
+        </div>
+      </>
+    );
+  };
 
   return (
     <div>
       {!user && loginForm()}
-      {user && createBlogForm()}
       {user && blogsForm()}
+      {user && createBlogForm()}
     </div>
   );
 };
