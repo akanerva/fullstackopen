@@ -97,6 +97,18 @@ const App = () => {
     setBlogs(newBlogs);
   };
 
+  const handleRemoveBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.remove(blog);
+        const newBlogs = blogs.filter((b) => b.id !== blog.id);
+        setBlogs(newBlogs);
+      } catch (exception) {
+        console.log(exception);
+      }
+    }
+  };
+
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
@@ -140,7 +152,12 @@ const App = () => {
         </div>
         <div style={divStyle}>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              handleRemoveBlog={handleRemoveBlog}
+            />
           ))}
         </div>
       </>
