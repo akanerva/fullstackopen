@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import Togglable from "./Togglable";
 import blogService from "../services/blogs";
+import PropTypes from "prop-types";
 
 const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
   const [title, setTitle] = useState("");
@@ -78,6 +79,12 @@ const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
       </form>
     </Togglable>
   );
+};
+
+CreateBlogForm.propTypes = {
+  username: PropTypes.string.isRequired,
+  handleMessageChange: PropTypes.func.isRequired,
+  handleAddBlog: PropTypes.func.isRequired,
 };
 
 export default CreateBlogForm;

@@ -5,7 +5,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 
 const Notification = ({ message }) => {
-  if (message == null) {
+  if (message === null) {
     return <></>;
   }
   console.log("message.error: ", message.error);
