@@ -177,6 +177,19 @@ describe("PUT /api/blogs:id", () => {
     };
     assert.deepEqual(updatedResult.body, newBlogWithId);
   });
+
+  test("only changes likes with likes as only parameter, and returns full info", async () => {
+    const blogs = await api.get("/api/blogs");
+    const blogToUpdate = blogs.body[0];
+    const idToUpdate = blogs.body[0].id;
+    const newBlog = {
+      likes: 45,
+    };
+    const response = await api.put(`/api/blogs/${idToUpdate}`).send(newBlog);
+    const expectedBlog = { ...blogToUpdate, likes: newBlog.likes };
+    console.log("expectedBlog: ", expectedBlog);
+    assert.deepEqual(expectedBlog, response.body);
+  });
 });
 
 after(async () => {
