@@ -13,7 +13,7 @@ const Blog = ({ blog, handleLike, handleRemoveBlog }) => {
 
   const collapsedBlog = () => (
     <>
-      {blog.title} {blog.author}
+      {blog.title}
       <button onClick={() => setCollapsed(false)}>view</button>
     </>
   );
