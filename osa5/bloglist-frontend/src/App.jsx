@@ -84,8 +84,9 @@ const App = () => {
     }
   };
 
-  const handleAddBlog = (blog) => {
-    setBlogs([...blogs, blog]);
+  const handleAddBlog = async (blog) => {
+    const response = await blogService.create(blog);
+    setBlogs([...blogs, response]);
   };
 
   const handleLike = async (blog) => {

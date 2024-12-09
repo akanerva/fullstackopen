@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import Togglable from "./Togglable";
-import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
 const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
@@ -20,15 +19,14 @@ const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
         url,
         author,
       };
-      const response = await blogService.create(newBlog);
-      handleAddBlog(response);
+      handleAddBlog(newBlog);
+      handleMessageChange({
+        text: `a new blog ${title} added`,
+        error: false,
+      });
       setTitle("");
       setAuthor("");
       setUrl("");
-      handleMessageChange({
-        text: `a new blog ${response.title} added`,
-        error: false,
-      });
       setTimeout(() => {
         handleMessageChange(null);
       }, 5000);
@@ -53,6 +51,7 @@ const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
             value={title}
             name="Title"
             onChange={({ target }) => setTitle(target.value)}
+            id="title-input"
           />
         </div>
         <div>
@@ -62,6 +61,7 @@ const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
             value={author}
             name="Author"
             onChange={({ target }) => setAuthor(target.value)}
+            id="author-input"
           />
         </div>
         <div>
@@ -71,6 +71,7 @@ const CreateBlogForm = ({ username, handleMessageChange, handleAddBlog }) => {
             value={url}
             name="Url"
             onChange={({ target }) => setUrl(target.value)}
+            id="url-input"
           />
           <div>
             <button type="submit">create</button>
