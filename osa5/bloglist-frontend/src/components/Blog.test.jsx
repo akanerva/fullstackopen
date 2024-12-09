@@ -42,3 +42,27 @@ test("renders more additional content after pressing view", async () => {
   expect(url).toBeDefined();
   expect(likes).toBeDefined();
 });
+
+test("like button calls handleLike function", async () => {
+  const blog = {
+    author: "kalevi",
+    title: "kalevin kaviomarkkinat kuopion torilla",
+    url: "...",
+    likes: 2,
+    user: "fff",
+  };
+
+  const likeHandler = vi.fn();
+  render(<Blog blog={blog} handleLike={likeHandler} />);
+
+  const user = userEvent.setup();
+
+  const viewButton = screen.getByText("view");
+  await user.click(viewButton);
+
+  const likeButton = screen.getByText("like");
+  await user.click(likeButton);
+  await user.click(likeButton);
+
+  expect(likeHandler.mock.calls).toHaveLength(2);
+});
