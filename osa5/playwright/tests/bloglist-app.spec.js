@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
+const { loginWith } = require("./helper");
 
 describe("Bloglist app", () => {
   beforeEach(async ({ page, request }) => {
@@ -45,6 +46,34 @@ describe("Bloglist app", () => {
 
       await page.getByText("login").click();
       await expect(page.getByText("wrong username or password")).toBeVisible();
+    });
+  });
+
+  describe("When logged in", () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, "keke", "salainen");
+      await expect(page.getByText("Keke Godberg logged in")).toBeVisible();
+    });
+
+    test("a new blog can be created", async ({ page }) => {
+      await page.getByRole("button", { name: "create blog" }).click();
+
+      await page.getByTestId("title-input").fill("muumilaakson tarinat");
+      await page.getByTestId("author-input").fill("muumipappa");
+      await page.getByTestId("url-input").fill("kek");
+
+      await page.getByRole("button", { name: "create" }).click();
+
+      // looks for exact matches
+      await expect(
+        page.getByText("a new blog muumilaakson tarinat added")
+      ).toBeVisible();
+      await expect(page.getByText("muumilaakson tarinat")).toBeVisible();
+      await expect(page.getByRole("button", { name: "view" })).toBeVisible();
+
+      await expect(
+        page.getByRole("button", { name: "create blog" })
+      ).toBeVisible();
     });
   });
 });
