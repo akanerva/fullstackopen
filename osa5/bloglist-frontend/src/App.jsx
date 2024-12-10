@@ -107,6 +107,10 @@ const App = () => {
         setBlogs(newBlogs);
       } catch (exception) {
         console.log(exception);
+        setMessage({ text: "can't remove someone else's blog", error: true });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       }
     }
   };
@@ -159,6 +163,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
+              user={user}
               handleLike={handleLike}
               handleRemoveBlog={handleRemoveBlog}
             />
@@ -176,7 +181,7 @@ const App = () => {
     <div>
       {blogsForm()}
       <CreateBlogForm
-        username={username}
+        username={user.username}
         handleMessageChange={setMessage}
         handleAddBlog={handleAddBlog}
       />

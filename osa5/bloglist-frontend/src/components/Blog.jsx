@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Blog = ({ blog, handleLike, handleRemoveBlog }) => {
+const Blog = ({ blog, user, handleLike, handleRemoveBlog }) => {
   const [collapsed, setCollapsed] = useState(true);
 
   const blogStyle = {
@@ -30,7 +30,9 @@ const Blog = ({ blog, handleLike, handleRemoveBlog }) => {
       </div>
       <div>{blog.author}</div>
       <div>
-        <button onClick={() => handleRemoveBlog(blog)}>remove</button>
+        {user.username === blog.user[0].username && (
+          <button onClick={() => handleRemoveBlog(blog)}>remove</button>
+        )}
       </div>
     </>
   );

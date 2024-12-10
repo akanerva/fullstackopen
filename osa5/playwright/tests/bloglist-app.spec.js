@@ -86,9 +86,35 @@ describe("Bloglist app", () => {
       await page.getByRole("button", { name: "view" }).click();
       await page.getByRole("button", { name: "remove" }).click();
 
-      page.on("dialog", (dialog) => dialog.appect());
+      page.on("dialog", (dialog) => dialog.accept());
       await expect(
         page.getByRole("button", { name: "view" })
+      ).not.toBeVisible();
+    });
+
+    test("blog is removable only by user who added it", async ({
+      page,
+      request,
+    }) => {
+      await createBlog(page, "muumilaakson tarinat", "muumipappa", "kek");
+
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();
+
+      await page.getByRole("button", { name: "logout" }).click();
+
+      await request.post("http://localhost:3003/api/users", {
+        data: {
+          name: "Lohilaakson Tom",
+          username: "tom",
+          password: "siikret",
+        },
+      });
+      await loginWith(page, "tom", "siikret");
+
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(
+        page.getByRole("button", { name: "remove" })
       ).not.toBeVisible();
     });
   });
