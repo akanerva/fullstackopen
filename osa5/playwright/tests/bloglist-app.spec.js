@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-const { loginWith } = require("./helper");
+const { loginWith, createBlog } = require("./helper");
 
 describe("Bloglist app", () => {
   beforeEach(async ({ page, request }) => {
@@ -56,13 +56,7 @@ describe("Bloglist app", () => {
     });
 
     test("a new blog can be created", async ({ page }) => {
-      await page.getByRole("button", { name: "create blog" }).click();
-
-      await page.getByTestId("title-input").fill("muumilaakson tarinat");
-      await page.getByTestId("author-input").fill("muumipappa");
-      await page.getByTestId("url-input").fill("kek");
-
-      await page.getByRole("button", { name: "create" }).click();
+      await createBlog(page, "muumilaakson tarinat", "muumipappa", "kek");
 
       // looks for exact matches
       await expect(
@@ -77,18 +71,25 @@ describe("Bloglist app", () => {
     });
 
     test("a blog can be liked", async ({ page }) => {
-      await page.getByRole("button", { name: "create blog" }).click();
+      await createBlog(page, "muumilaakson tarinat", "muumipappa", "kek");
 
-      await page.getByTestId("title-input").fill("muumilaakson tarinat");
-      await page.getByTestId("author-input").fill("muumipappa");
-      await page.getByTestId("url-input").fill("kek");
-
-      await page.getByRole("button", { name: "create" }).click();
       await page.getByRole("button", { name: "view" }).click();
 
       await expect(page.getByText("likes 0")).toBeVisible();
       await page.getByRole("button", { name: "like" }).click();
       await expect(page.getByText("likes 1")).toBeVisible();
+    });
+
+    test("a blog can be removed", async ({ page }) => {
+      await createBlog(page, "muumilaakson tarinat", "muumipappa", "kek");
+
+      await page.getByRole("button", { name: "view" }).click();
+      await page.getByRole("button", { name: "remove" }).click();
+
+      page.on("dialog", (dialog) => dialog.appect());
+      await expect(
+        page.getByRole("button", { name: "view" })
+      ).not.toBeVisible();
     });
   });
 });
