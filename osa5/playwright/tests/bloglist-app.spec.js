@@ -23,4 +23,28 @@ describe("Bloglist app", () => {
     await expect(username).toBeVisible();
     await expect(password).toBeVisible();
   });
+
+  describe("Login", () => {
+    test("succeeds with correct credentials", async ({ page }) => {
+      const username = await page.getByTestId("username-input");
+      const password = await page.getByTestId("password-input");
+
+      await username.fill("keke");
+      await password.fill("salainen");
+
+      await page.getByText("login").click();
+      await expect(page.getByText("Keke Godberg logged in")).toBeVisible();
+    });
+
+    test("fails with wrong credentials", async ({ page }) => {
+      const username = await page.getByTestId("username-input");
+      const password = await page.getByTestId("password-input");
+
+      await username.fill("jaska");
+      await password.fill("avonainen");
+
+      await page.getByText("login").click();
+      await expect(page.getByText("wrong username or password")).toBeVisible();
+    });
+  });
 });
