@@ -75,5 +75,20 @@ describe("Bloglist app", () => {
         page.getByRole("button", { name: "create blog" })
       ).toBeVisible();
     });
+
+    test("a blog can be liked", async ({ page }) => {
+      await page.getByRole("button", { name: "create blog" }).click();
+
+      await page.getByTestId("title-input").fill("muumilaakson tarinat");
+      await page.getByTestId("author-input").fill("muumipappa");
+      await page.getByTestId("url-input").fill("kek");
+
+      await page.getByRole("button", { name: "create" }).click();
+      await page.getByRole("button", { name: "view" }).click();
+
+      await expect(page.getByText("likes 0")).toBeVisible();
+      await page.getByRole("button", { name: "like" }).click();
+      await expect(page.getByText("likes 1")).toBeVisible();
+    });
   });
 });
