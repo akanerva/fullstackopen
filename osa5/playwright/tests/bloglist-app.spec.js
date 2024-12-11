@@ -118,4 +118,64 @@ describe("Bloglist app", () => {
       ).not.toBeVisible();
     });
   });
+
+  // blogs are added via http requests because it is away easier to set likes that way
+  test("blogs are sorted by amount of likes", async ({ page, request }) => {
+    await loginWith(page, "keke", "salainen");
+    await expect(page.getByText("Keke Godberg logged in")).toBeVisible();
+    const user = await page.evaluate(
+      "localStorage.getItem('loggedBloglistUser')"
+    );
+    const token = JSON.parse(user).token;
+    await request.post("http://localhost:3003/api/blogs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        title: "on tämä työmaa",
+        author: "röi ukko",
+        url: "asdf",
+        likes: 3,
+        user: "asdf",
+      },
+    });
+    await request.post("http://localhost:3003/api/blogs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        title: "jumppa piristää päivääsi",
+        author: "jumppapirkko",
+        url: "qwerty",
+        likes: 10,
+        user: "asdf",
+      },
+    });
+    await request.post("http://localhost:3003/api/blogs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        title: "jo on kissanpäivät",
+        author: "tiger king",
+        url: "jkjkjk",
+        likes: 5,
+        user: "asdf",
+      },
+    });
+
+    await page.reload();
+
+    // the view button disappears after pressing it so this will get them all
+    await page.getByRole("button", { name: "view" }).first().click();
+    await page.getByRole("button", { name: "view" }).first().click();
+    await page.getByRole("button", { name: "view" }).first().click();
+
+    const likes = await page.getByText(/likes/).all();
+
+    // looking for subtext because the div also contains a button
+    await expect(likes[0]).toHaveText(/likes 10/);
+    await expect(likes[1]).toHaveText(/likes 5/);
+    await expect(likes[2]).toHaveText(/likes 3/);
+  });
 });
