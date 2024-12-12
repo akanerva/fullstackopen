@@ -1,0 +1,16 @@
+Script started on 2024-12-11 19:10:01+02:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="106" LINES="55"]
+[?2004h]0;akanerva@oy2202062: ~/koulu/fullstack/osa12/part12-containers-applications/script-answers[01;32makanerva@oy2202062[00m:[01;34m~/koulu/fullstack/osa12/part12-containers-applications/script-answers[00m$ docker containn[Ker  run -it ubuntu bash
+[?2004l[?2004h]0;root@de55573163a2: /root@de55573163a2:/# ls
+[?2004l[0m[01;36mbin[0m   [01;34mdev[0m  [01;34mhome[0m  [01;36mlib32[0m  [01;36mlibx32[0m  [01;34mmnt[0m  [01;34mproc[0m  [01;34mrun[0m   [01;34msrv[0m  [30;42mtmp[0m  [01;34mvar[0m
+[01;34mboot[0m  [01;34metc[0m  [01;36mlib[0m   [01;36mlib64[0m  [01;34mmedia[0m   [01;34mopt[0m  [01;34mroot[0m  [01;36msbin[0m  [01;34msys[0m  [01;34musr[0m
+[?2004h]0;root@de55573163a2: /root@de55573163a2:/# cd usr/src/
+[?2004l[?2004h]0;root@de55573163a2: /usr/srcroot@de55573163a2:/usr/src# ls
+[?2004l[?2004h]0;root@de55573163a2: /usr/srcroot@de55573163a2:/usr/src# mkdir app
+[?2004l[?2004h]0;root@de55573163a2: /usr/srcroot@de55573163a2:/usr/src# cd app/
+[?2004l[?2004h]0;root@de55573163a2: /usr/src/approot@de55573163a2:/usr/src/app# touch index.js
+[?2004l[?2004h]0;root@de55573163a2: /usr/src/approot@de55573163a2:/usr/src/app# exit
+[?2004lexit
+[?2004h]0;akanerva@oy2202062: ~/koulu/fullstack/osa12/part12-containers-applications/script-answers[01;32makanerva@oy2202062[00m:[01;34m~/koulu/fullstack/osa12/part12-containers-applications/script-answers[00m$ exit
+[?2004lexit
+
+Script done on 2024-12-11 19:11:16+02:00 [COMMAND_EXIT_CODE="0"]
