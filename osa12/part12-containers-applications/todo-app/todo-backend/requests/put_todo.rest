@@ -1,0 +1,7 @@
+PUT http://localhost:3000/todos/675b0080b4a74344abe9496a
+Content-Type: application/json
+
+{
+    "text": "Profit",
+    "done": false
+}
