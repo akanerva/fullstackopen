@@ -18,9 +18,10 @@ router.post("/", async (req, res) => {
   const todos = await getAsync("added_todos");
   console.log(`todos: ${todos}`);
   console.log(todos === "NaN");
+  console.log(`parseInt result: ${parseInt(todos)}`);
   const result = await setAsync(
     "added_todos",
-    todos === "NaN" ? 1 : parseInt(todos) + 1
+    todos === "NaN" || todos === null ? 1 : parseInt(todos) + 1
   );
   console.log(result);
 
